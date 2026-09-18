@@ -809,6 +809,7 @@
   const bookingStatus = document.getElementById('bookingStatus');
   const dayPicker = document.getElementById('dayPicker');
   const timePicker = document.getElementById('timePicker');
+  let availabilityRequestId = 0;
 
   function formatDateKey(date) {
     const year = date.getFullYear();
@@ -903,11 +904,16 @@
   }
 
   async function renderTimePicker(dateKey) {
+    const requestId = ++availabilityRequestId;
     bookingTime.value = '';
     timePicker.innerHTML = '<p class="booking-help">Consultando disponibilidad...</p>';
 
     try {
       const bookedSlots = await getBookedSlots(dateKey);
+      if (requestId !== availabilityRequestId) {
+        return;
+      }
+
       const slots = getSlotsForDate(dateKey);
       const availableSlots = slots.filter(slot => !bookedSlots.has(slot));
 
@@ -941,6 +947,10 @@
         button.addEventListener('click', () => selectTime(button.dataset.time));
       });
     } catch (error) {
+      if (requestId !== availabilityRequestId) {
+        return;
+      }
+
       console.error('Error al consultar la disponibilidad:', error);
       timePicker.innerHTML = '<p class="booking-help">No pudimos consultar la disponibilidad. Intentá nuevamente.</p>';
     }
@@ -1036,6 +1046,7 @@
 
       bookingStatus.textContent = 'Solicitud guardada. Abrimos WhatsApp para confirmar disponibilidad y coordinar el turno.';
       bookingStatus.classList.add('visible');
+      renderTimePicker(String(data.get('date')));
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
     } catch (error) {
       console.error('No se pudo guardar el turno en Supabase:', error);
