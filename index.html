@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Lora:wght@400;500;600;700&display=swap');
+
   :root{
     --black:#0d0f0c;
     --black-soft:#14170f;
@@ -22,8 +24,8 @@
     --paper:#f4f6f1;
     --paper-dim:#e4e8de;
     --ink:#101210;
-    --font-display:'Bricolage Grotesque', sans-serif;
-    --font-body:'Instrument Sans', sans-serif;
+    --font-display:'Fraunces', serif;
+    --font-body:'Lora', serif;
     --font-mono:'IBM Plex Mono', monospace;
     --radius-sm:3px;
     --radius-btn:2px;
@@ -300,9 +302,15 @@
   }
   .service-row .desc{color:var(--gray);font-size:14.5px;line-height:1.6;}
   .service-row .price{
-    font-family:var(--font-mono);color:var(--green-bright);font-size:14px;
+    color:var(--green-bright);font-family:var(--font-display);
+    font-size:clamp(24px,2.3vw,32px);font-weight:800;
+    line-height:1.05;letter-spacing:.01em;white-space:nowrap;
   }
-  .service-row .price small{display:block;color:var(--gray);font-family:var(--font-body);font-size:12px;margin-bottom:4px;}
+  .service-row .price small{
+    display:block;color:var(--gray);font-family:var(--font-body);
+    font-size:13px;font-weight:600;line-height:1.25;
+    letter-spacing:.01em;margin-bottom:7px;
+  }
   .btn-line{
     font-family:var(--font-mono);font-size:13px;font-weight:500;
     color:var(--paper);
@@ -324,7 +332,7 @@
     .section-head p{font-size:14px; max-width:100%;}
     .service-row .name h3{font-size:22px;}
     .service-row .desc{font-size:13px;}
-    .service-row .price{font-size:13px;}
+    .service-row .price{font-size:26px;}
     .cta-final .wrap{flex-direction:column; align-items:stretch; gap:22px;}
     .cta-final h2{font-size:clamp(28px,8vw,42px);}
     .cta-final p{margin-top:12px;}
@@ -364,15 +372,16 @@
   .includes li::before{content:"—";color:var(--green-bright-dim);flex:none;}
   .price-table{width:100%;border-collapse:collapse;margin-bottom:26px;}
   .price-table th{
-    font-family:var(--font-mono);font-weight:500;font-size:10.5px;
-    text-transform:uppercase;letter-spacing:.03em;
-    color:var(--gray);text-align:left;padding-bottom:8px;
+    font-family:var(--font-body);font-weight:700;font-size:13px;
+    text-transform:uppercase;letter-spacing:.04em;
+    color:#565c53;text-align:left;padding-bottom:10px;
     border-bottom:1px solid var(--paper-dim);
   }
-  .combo-card.featured .price-table th{border-color:var(--gray-line);}
+  .combo-card.featured .price-table th{color:var(--gray);border-color:var(--gray-line);}
   .price-table td{
-    font-family:var(--font-mono);font-size:15px;font-weight:600;
-    padding:12px 0;
+    font-family:var(--font-display);font-size:clamp(24px,2.4vw,32px);
+    font-weight:800;line-height:1.05;letter-spacing:.01em;
+    padding:14px 8px 14px 0;
     border-bottom:1px solid var(--paper-dim);
   }
   .combo-card.featured .price-table td{color:var(--paper);border-color:var(--gray-line);}
@@ -387,8 +396,8 @@
     .combo-time{margin-top:0;}
     .combo-desc{font-size:13px;line-height:1.55;}
     .includes li{font-size:13px; line-height:1.5;}
-    .price-table th{font-size:9px;}
-    .price-table td{font-size:13px;}
+    .price-table th{font-size:12px;}
+    .price-table td{font-size:24px;}
     .table-scroll{margin-bottom:18px;}
     .table-scroll .price-table{min-width:300px;}
   }
@@ -413,6 +422,48 @@
   @media (max-width:600px){
     .cta-final .wrap{flex-direction:column;align-items:stretch;}
     .cta-final .btn-primary{width:100%;justify-content:center;}
+  }
+
+  /* ---------- RESERVA DE TURNOS ---------- */
+  .booking{background:var(--paper-dim);}
+  .booking-card{
+    max-width:820px;margin:0 auto;background:#fff;padding:clamp(24px,5vw,48px);
+    border:1px solid #d2d8cc;border-top:4px solid var(--green);
+    box-shadow:0 12px 35px rgba(16,18,16,.08);
+  }
+  .booking-card h2{font-size:clamp(32px,5vw,52px);text-transform:uppercase;}
+  .booking-intro{color:#565c53;font-size:16px;line-height:1.6;margin:16px 0 30px;max-width:62ch;}
+  .booking-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .booking-field{display:flex;flex-direction:column;gap:8px;}
+  .booking-field.full{grid-column:1/-1;}
+  .booking-field label{font-size:15px;font-weight:800;color:var(--ink);}
+  .booking-field input,.booking-field select{
+    width:100%;border:1px solid #b8c2b5;border-radius:var(--radius-sm);
+    background:#fff;color:var(--ink);font:inherit;font-size:17px;padding:16px 14px;
+  }
+  .booking-field input:focus,.booking-field select:focus{border-color:var(--green);outline:2px solid rgba(30,92,64,.18);}
+  .booking-day-grid,.booking-time-grid{display:grid;gap:10px;}
+  .booking-day-grid{grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));}
+  .booking-time-grid{grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));}
+  .booking-day-option,.booking-time-option{
+    appearance:none;border:1px solid #c8d0c4;border-radius:14px;background:#f8faf7;
+    color:var(--ink);padding:12px 10px;cursor:pointer;transition:all .2s ease;font:700 15px var(--font-body);
+    text-align:center;display:flex;flex-direction:column;gap:4px;min-height:72px;justify-content:center;
+  }
+  .booking-day-option:hover,.booking-time-option:hover{border-color:var(--green);background:#edf8f0;transform:translateY(-1px);}
+  .booking-day-option.selected,.booking-time-option.selected{
+    background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 10px 20px rgba(30,92,64,.15);
+  }
+  .booking-day-week,.booking-time-label{font-size:12px;letter-spacing:.05em;text-transform:uppercase;opacity:.9;}
+  .booking-day-date,.booking-time-value{font-size:17px;font-weight:800;}
+  .booking-help{color:#687166;font-size:14px;line-height:1.5;margin:0;}
+  .booking-form .btn-primary{border:0;cursor:pointer;font:700 16px var(--font-body);justify-content:center;}
+  .booking-status{display:none;margin-top:20px;padding:16px;border-radius:var(--radius-sm);font-size:15px;line-height:1.5;}
+  .booking-status.visible{display:block;background:#e3f4e7;color:#173a2c;border:1px solid #9ed1aa;}
+  @media (max-width:600px){
+    .booking-form{grid-template-columns:1fr;gap:17px;}
+    .booking-field.full{grid-column:auto;}
+    .booking-day-grid,.booking-time-grid{grid-template-columns:repeat(2, minmax(0,1fr));}
   }
 
   /* ---------- FOOTER ---------- */
@@ -499,7 +550,7 @@
       <h1 class="hero-title">Tu auto<br>impecable<br><em>sin moverte</em> de casa</h1>
       <p class="hero-sub">Vamos hasta donde estés con el equipo completo. Lavado, detailing interior y protección de pintura, con productos profesionales y turno confirmado por WhatsApp.</p>
       <div class="hero-ctas">
-        <a class="btn-primary js-wa" data-msg="Hola! Quiero agendar un turno de lavado a domicilio." href="#">
+        <a class="btn-primary js-booking" data-service="Consulta general" href="#reservar">
           Agendar turno
         </a>
         <a class="btn-ghost" href="#combos">Ver combos</a>
@@ -511,14 +562,16 @@
 <section class="about" id="nosotros">
   <div class="wrap about-grid">
     <div class="about-copy">
-      <p class="eyebrow" style="color:var(--green-bright-dim)">Quiénes somos</p>
+      <p class="eyebrow" style="color:var(--green-bright-dim)">Sobre nosotros</p>
       <h2>Un equipo, un vehículo a la vez</h2>
-      <p>Raid Naves nació en Bahía Blanca con una idea simple: el lavadero tradicional te hace perder la mañana, y tu auto se merece algo mejor que una manguera y un trapo apurado. Llevamos el taller hasta tu vereda, tu cochera o tu trabajo.</p>
-      <p>No tercerizamos ni mandamos a cualquiera: el mismo equipo que arma los combos es el que se arrodilla al lado de tu auto. Nos importa que quede como recién salido de la concesionaria, y que vos puedas seguir con tu día mientras tanto.</p>
+      <p>Raid Naves nació en Bahía Blanca con una convicción profunda: el lavadero tradicional te hace perder la mañana, y tu vehículo se merece mucho más que una manguera y un trapo apurado. Queríamos cambiar las reglas del juego y llevar un taller de estética vehicular de nivel profesional directo a tu vereda, tu cochera o tu lugar de trabajo.</p>
+      <p>Este proyecto es el reflejo de una sociedad y una amistad que no entienden de distancias. Mientras Fede coordina, gestiona y aporta su visión desde Alemania, Joaquín está al pie del cañón en Bahía Blanca, poniendo el cuerpo y la dedicación absoluta en cada detalle.</p>
+      <p>Aquí no tercerizamos ni mandamos a improvisados: el mismo equipo que diseña los servicios es el que se arrodilla al lado de tu auto con un compromiso inquebrantable. Nos mueve la obsesión por dejar tu nave impecable, como recién salida de la concesionaria, para que vos puedas ganar tiempo y seguir con tus cosas con total tranquilidad.</p>
+      <h2 style="margin-top:34px;">Cómo Funciona</h2>
       <ul class="about-list">
-        <li><span class="num">01</span><span>Coordinás el turno por WhatsApp y confirmamos horario, dirección y categoría del vehículo.</span></li>
-        <li><span class="num">02</span><span>Llegamos con agua, insumos profesionales y todo lo necesario. No hace falta que estés presente todo el tiempo.</span></li>
-        <li><span class="num">03</span><span>Revisamos el resultado juntos antes de cerrar el servicio.</span></li>
+        <li><span class="num">01</span><span>Coordinás el turno por WhatsApp y definimos juntos el horario, la dirección y la categoría del vehículo.</span></li>
+        <li><span class="num">02</span><span>Nos presentamos con insumos profesionales y todo el equipamiento necesario. Solo un pequeño favor: por el momento, necesitamos que nos prestes un poquito de agua y corriente (¡prometemos no abusar del enchufe!). No es necesario que estés presente durante todo el proceso.</span></li>
+        <li><span class="num">03</span><span>Revisamos el resultado final en conjunto antes de dar por concluido el servicio.</span></li>
       </ul>
     </div>
     <div class="about-visual">
@@ -541,29 +594,29 @@
       <div class="service-row">
         <div class="name"><h3>Exterior Estándar</h3><span>1 h 15 min</span></div>
         <div class="desc">Lavado desengrasante, segundo lavado de contacto con champú, secado premium sin marcas y limpieza superficial de llantas.</div>
-        <div class="price"><small>Chico → Grande</small>$25.000 – $48.000</div>
-        <a class="btn-line js-wa" data-msg="Hola! Quiero agendar el servicio Exterior Estándar." href="#">Agendar turno →</a>
+        <div class="price"><small>Vehículo chico a grande</small>$25.000 – $48.000</div>
+        <a class="btn-line js-booking" data-service="Exterior Estándar" href="#reservar">Agendar turno →</a>
       </div>
 
       <div class="service-row">
         <div class="name"><h3>Exterior Pro</h3><span>1 h 40 min</span></div>
         <div class="desc">Incluye el Exterior Estándar, más limpieza detallada de cada compartimiento (emblemas, parrillas) y tratamiento de plásticos exteriores.</div>
-        <div class="price"><small>Chico → Grande</small>$48.000 – $90.000</div>
-        <a class="btn-line js-wa" data-msg="Hola! Quiero agendar el servicio Exterior Pro." href="#">Agendar turno →</a>
+        <div class="price"><small>Vehículo chico a grande</small>$48.000 – $90.000</div>
+        <a class="btn-line js-booking" data-service="Exterior Pro" href="#reservar">Agendar turno →</a>
       </div>
 
       <div class="service-row">
         <div class="name"><h3>Interior Estándar</h3><span>1 h 40 min</span></div>
         <div class="desc">Aspirado general de butacas, alfombras y baúl, limpieza de tablero y paneles, vidrios interiores y perfumado final.</div>
-        <div class="price"><small>Chico → Grande</small>$22.000 – $44.000</div>
-        <a class="btn-line js-wa" data-msg="Hola! Quiero agendar el servicio Interior Estándar." href="#">Agendar turno →</a>
+        <div class="price"><small>Vehículo chico a grande</small>$22.000 – $44.000</div>
+        <a class="btn-line js-booking" data-service="Interior Estándar" href="#reservar">Agendar turno →</a>
       </div>
 
       <div class="service-row">
         <div class="name"><h3>Interior Pro</h3><span>2 h 20 min</span></div>
         <div class="desc">Incluye el Interior Estándar, más limpieza profunda de tapizados y techo, detalle de rendijas y plásticos, y protección UV.</div>
-        <div class="price"><small>Chico → Grande</small>$75.000 – $145.000</div>
-        <a class="btn-line js-wa" data-msg="Hola! Quiero agendar el servicio Interior Pro." href="#">Agendar turno →</a>
+        <div class="price"><small>Vehículo chico a grande</small>$75.000 – $145.000</div>
+        <a class="btn-line js-booking" data-service="Interior Pro" href="#reservar">Agendar turno →</a>
       </div>
 
     </div>
@@ -597,7 +650,7 @@
           <tr><td>$44.000</td><td>$52.000</td><td>$68.000</td><td>$86.000</td></tr>
         </table>
         </div>
-        <a class="btn-primary js-wa" data-msg="Hola! Quiero agendar el Combo Estándar." href="#">Agendar turno</a>
+        <a class="btn-primary js-booking" data-service="Combo Estándar" href="#reservar">Agendar turno</a>
       </div>
 
       <div class="combo-card featured">
@@ -617,8 +670,62 @@
           <tr><td>$162.000</td><td>$189.600</td><td>$246.000</td><td>$306.000</td></tr>
         </table>
         </div>
-        <a class="btn-primary js-wa" data-msg="Hola! Quiero agendar el Detailing Full." href="#">Agendar turno</a>
+        <a class="btn-primary js-booking" data-service="Detailing Full" href="#reservar">Agendar turno</a>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="booking" id="reservar">
+  <div class="wrap">
+    <div class="booking-card">
+      <p class="eyebrow">Reservá tu turno</p>
+      <h2>Elegí día y hora</h2>
+      <p class="booking-intro">Completá tus datos y el horario que preferís. Al enviar, se abrirá WhatsApp con toda la información para confirmar la disponibilidad.</p>
+      <form class="booking-form" id="bookingForm">
+        <div class="booking-field full">
+          <label for="bookingService">Servicio</label>
+          <select id="bookingService" name="service" required>
+            <option value="">Seleccioná un servicio</option>
+            <option>Exterior Estándar</option>
+            <option>Exterior Pro</option>
+            <option>Interior Estándar</option>
+            <option>Interior Pro</option>
+            <option>Combo Estándar</option>
+            <option>Detailing Full</option>
+            <option>Consulta general</option>
+          </select>
+        </div>
+        <div class="booking-field full">
+          <label>Día</label>
+          <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
+          <input id="bookingDate" name="date" type="hidden" required>
+        </div>
+        <div class="booking-field full">
+          <label>Horario preferido</label>
+          <div class="booking-time-grid" id="timePicker" aria-label="Elegí un horario disponible"></div>
+          <input id="bookingTime" name="time" type="hidden" required>
+        </div>
+        <div class="booking-field">
+          <label for="bookingName">Nombre y apellido</label>
+          <input id="bookingName" name="name" type="text" autocomplete="name" placeholder="Tu nombre" required>
+        </div>
+        <div class="booking-field">
+          <label for="bookingPhone">Teléfono</label>
+          <input id="bookingPhone" name="phone" type="tel" autocomplete="tel" placeholder="Tu teléfono" required>
+        </div>
+        <div class="booking-field full">
+          <label for="bookingVehicle">Vehículo</label>
+          <input id="bookingVehicle" name="vehicle" type="text" placeholder="Modelo y/o patente del auto" required>
+        </div>
+        <div class="booking-field full">
+          <label for="bookingAddress">Dirección del servicio</label>
+          <input id="bookingAddress" name="address" type="text" autocomplete="street-address" placeholder="Calle, número y localidad" required>
+          <p class="booking-help">Trabajamos a domicilio en Bahía Blanca y zonas cercanas. Te confirmamos la cobertura por WhatsApp.</p>
+        </div>
+        <button class="btn-primary full" type="submit">Solicitar este turno →</button>
+      </form>
+      <div class="booking-status" id="bookingStatus" role="status" aria-live="polite"></div>
     </div>
   </div>
 </section>
@@ -629,8 +736,8 @@
       <h2>¿Coordinamos tu turno?</h2>
       <p>Contanos categoría de vehículo, zona y qué servicio te interesa. Te confirmamos día y horario por WhatsApp.</p>
     </div>
-    <a class="btn-primary js-wa" data-msg="Hola! Quiero coordinar un turno de lavado a domicilio." href="#">
-      Escribir por WhatsApp
+    <a class="btn-primary js-booking" data-service="Consulta general" href="#reservar">
+      Elegir día y hora
     </a>
   </div>
 </section>
@@ -679,6 +786,198 @@
   menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
 
   const WHATSAPP_NUMBER = '5492915650392';
+  const SUPABASE_URL = 'https://dpbyyfqgsstovrwfpfxx.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwYnl5ZnFnc3N0b3Zyd2ZwZnh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2Njg3MTgsImV4cCI6MjEwNTI0NDcxOH0.7Aof36jO4mGgcsakXqRia_bySe7rFZtx6OAXDvbSUYU';
+
+  const bookingDate = document.getElementById('bookingDate');
+  const bookingTime = document.getElementById('bookingTime');
+  const bookingService = document.getElementById('bookingService');
+  const bookingForm = document.getElementById('bookingForm');
+  const bookingStatus = document.getElementById('bookingStatus');
+  const dayPicker = document.getElementById('dayPicker');
+  const timePicker = document.getElementById('timePicker');
+
+  function formatDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function getAllowedDates() {
+    const dates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 60; i += 1) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      const weekday = date.getDay();
+      if ([1, 5, 6, 0].includes(weekday)) {
+        dates.push(date);
+      }
+    }
+    return dates;
+  }
+
+  function getSlotsForDate(dateKey) {
+    const date = new Date(`${dateKey}T12:00:00`);
+    const weekday = date.getDay();
+    if (weekday === 1 || weekday === 5) {
+      return ['15:00', '15:30', '16:00', '17:00', '18:00', '19:00'];
+    }
+    if (weekday === 6) {
+      return ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00'];
+    }
+    return ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+  }
+
+  function renderDayPicker() {
+    const dates = getAllowedDates();
+    dayPicker.innerHTML = dates.map(date => {
+      const key = formatDateKey(date);
+      const short = date.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
+      return `
+        <button type="button" class="booking-day-option" data-date="${key}" aria-label="${short}">
+          <span class="booking-day-week">${date.toLocaleDateString('es-AR', { weekday: 'short' })}</span>
+          <span class="booking-day-date">${date.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}</span>
+        </button>
+      `;
+    }).join('');
+
+    const firstDate = dates[0];
+    if (firstDate) {
+      const firstKey = formatDateKey(firstDate);
+      selectDate(firstKey);
+    }
+
+    dayPicker.querySelectorAll('.booking-day-option').forEach(button => {
+      button.addEventListener('click', () => selectDate(button.dataset.date));
+    });
+  }
+
+  function selectDate(dateKey) {
+    const buttons = [...dayPicker.querySelectorAll('.booking-day-option')];
+    buttons.forEach(button => {
+      const isSelected = button.dataset.date === dateKey;
+      button.classList.toggle('selected', isSelected);
+      button.setAttribute('aria-pressed', String(isSelected));
+    });
+
+    bookingDate.value = dateKey;
+    renderTimePicker(dateKey);
+  }
+
+  function renderTimePicker(dateKey) {
+    const slots = getSlotsForDate(dateKey);
+    timePicker.innerHTML = slots.map(slot => `
+      <button type="button" class="booking-time-option" data-time="${slot}" aria-label="${slot}">
+        <span class="booking-time-label">Horario</span>
+        <span class="booking-time-value">${slot}</span>
+      </button>
+    `).join('');
+
+    const firstSlot = slots[0];
+    if (firstSlot) {
+      selectTime(firstSlot);
+    }
+
+    timePicker.querySelectorAll('.booking-time-option').forEach(button => {
+      button.addEventListener('click', () => selectTime(button.dataset.time));
+    });
+  }
+
+  function selectTime(time) {
+    const buttons = [...timePicker.querySelectorAll('.booking-time-option')];
+    buttons.forEach(button => {
+      const isSelected = button.dataset.time === time;
+      button.classList.toggle('selected', isSelected);
+      button.setAttribute('aria-pressed', String(isSelected));
+    });
+
+    bookingTime.value = time;
+  }
+
+  document.querySelectorAll('.js-booking').forEach(link => {
+    link.addEventListener('click', () => {
+      const service = link.getAttribute('data-service');
+      if (service) bookingService.value = service;
+      bookingStatus.classList.remove('visible');
+    });
+  });
+
+  renderDayPicker();
+
+  bookingForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const data = new FormData(bookingForm);
+    const date = new Date(`${data.get('date')}T12:00:00`);
+    const readableDate = date.toLocaleDateString('es-AR', {
+      weekday:'long', day:'numeric', month:'long'
+    });
+    const message = [
+      'Hola! Quiero solicitar un turno.',
+      `Servicio: ${data.get('service')}`,
+      `Día: ${readableDate}`,
+      `Horario preferido: ${data.get('time')}`,
+      `Nombre: ${data.get('name')}`,
+      `Teléfono: ${data.get('phone')}`,
+      `Vehículo: ${data.get('vehicle')}`,
+      `Dirección: ${data.get('address')}`
+    ].join('\n');
+    const submitButton = bookingForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Guardando solicitud...';
+    bookingStatus.classList.remove('visible');
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/turnos`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=representation'
+        },
+        body: JSON.stringify({
+          servicio: data.get('service'),
+          fecha: data.get('date'),
+          horario: data.get('time'),
+          nombre: data.get('name'),
+          telefono: data.get('phone'),
+          auto: data.get('vehicle'),
+          direccion: data.get('address'),
+          estado: 'pendiente'
+        })
+      });
+
+      if (!response.ok) {
+        const details = await response.text();
+        let errorMessage = `HTTP ${response.status}`;
+        try {
+          const errorData = JSON.parse(details);
+          if (errorData.code === '23505') {
+            errorMessage = 'Ese día y horario ya fue solicitado. Elegí otro horario.';
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } catch (parseError) {
+          console.error('Respuesta inválida de Supabase:', details, parseError);
+        }
+        throw new Error(errorMessage);
+      }
+
+      bookingStatus.textContent = 'Solicitud guardada. Abrimos WhatsApp para confirmar disponibilidad y coordinar el turno.';
+      bookingStatus.classList.add('visible');
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    } catch (error) {
+      console.error('No se pudo guardar el turno en Supabase:', error);
+      bookingStatus.textContent = `No pudimos guardar la solicitud: ${error.message}`;
+      bookingStatus.classList.add('visible');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Solicitar este turno →';
+    }
+  });
 
   document.querySelectorAll('.js-wa').forEach(link => {
     const msg = link.getAttribute('data-msg') || 'Hola! Quiero consultar por un turno.';
