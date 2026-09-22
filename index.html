@@ -378,15 +378,17 @@
     text-transform:uppercase;letter-spacing:.04em;
     color:#565c53;text-align:left;padding-bottom:10px;
     border-bottom:1px solid var(--paper-dim);
-    overflow-wrap:anywhere;
+    overflow-wrap:anywhere;word-break:normal;vertical-align:bottom;
   }
   .combo-card.featured .price-table th{color:var(--gray);border-color:var(--gray-line);}
   .price-table td{
     font-family:var(--font-display);font-size:clamp(24px,2.4vw,32px);
     font-weight:800;line-height:1.05;letter-spacing:.01em;
-    padding:14px 8px 14px 0;
+    padding:14px 8px 14px 0;overflow-wrap:anywhere;word-break:normal;vertical-align:top;
     border-bottom:1px solid var(--paper-dim);
   }
+  .price-table th,.price-table td{width:25%;}
+  .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:8px;}
   .combo-card.featured .price-table td{color:var(--paper);border-color:var(--gray-line);}
   .price-table td:first-child{color:var(--green-bright-dim);}
   @media (max-width:860px){
@@ -399,8 +401,9 @@
     .combo-time{margin-top:0;}
     .combo-desc{font-size:13px;line-height:1.55;}
     .includes li{font-size:13px; line-height:1.5;}
-    .price-table th{font-size:10px;line-height:1.2;padding-right:3px;}
-    .price-table td{font-size:clamp(15px,5.2vw,24px);padding-right:3px;overflow-wrap:anywhere;}
+    .price-table th{font-size:clamp(9px,2.8vw,11px);line-height:1.2;padding-right:3px;}
+    .price-table td{font-size:clamp(14px,4.2vw,22px);padding:12px 3px 12px 0;}
+    .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:3px;}
     .table-scroll{margin-bottom:18px;overflow:visible;}
   }
 
@@ -436,6 +439,8 @@
   .booking-card h2{font-size:clamp(32px,5vw,52px);text-transform:uppercase;}
   .booking-intro{color:#565c53;font-size:16px;line-height:1.6;margin:16px 0 30px;max-width:62ch;}
   .booking-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .booking-calendar-toggle{grid-column:1/-1;margin:0 0 20px;}
+  .booking-schedule{display:grid;gap:20px;}
   .booking-field{display:flex;flex-direction:column;gap:8px;}
   .booking-field.full{grid-column:1/-1;}
   .booking-field label{font-size:15px;font-weight:800;color:var(--ink);}
@@ -468,6 +473,7 @@
     .booking-day-grid,.booking-time-grid{grid-template-columns:repeat(2, minmax(0,1fr));min-width:0;}
     .booking-day-option,.booking-time-option{padding:10px 6px;font-size:14px;}
     .booking-day-date,.booking-time-value{font-size:15px;}
+    .booking-calendar-toggle{width:100%;justify-content:center;}
   }
 
   /* ---------- FOOTER ---------- */
@@ -700,15 +706,20 @@
             <option>Consulta general</option>
           </select>
         </div>
-        <div class="booking-field full">
-          <label>Día</label>
-          <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
-          <input id="bookingDate" name="date" type="hidden" required>
-        </div>
-        <div class="booking-field full">
-          <label>Horario preferido</label>
-          <div class="booking-time-grid" id="timePicker" aria-label="Elegí un horario disponible"></div>
-          <input id="bookingTime" name="time" type="hidden" required>
+        <button class="btn-line booking-calendar-toggle" id="calendarToggle" type="button" aria-expanded="false" aria-controls="bookingSchedule">
+          Mostrar calendario
+        </button>
+        <div class="booking-schedule" id="bookingSchedule" hidden>
+          <div class="booking-field full">
+            <label>Día</label>
+            <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
+            <input id="bookingDate" name="date" type="hidden" required>
+          </div>
+          <div class="booking-field full">
+            <label>Horario preferido</label>
+            <div class="booking-time-grid" id="timePicker" aria-label="Elegí un horario disponible"></div>
+            <input id="bookingTime" name="time" type="hidden" required>
+          </div>
         </div>
         <div class="booking-field">
           <label for="bookingName">Nombre y apellido</label>
@@ -800,7 +811,10 @@
   const bookingStatus = document.getElementById('bookingStatus');
   const dayPicker = document.getElementById('dayPicker');
   const timePicker = document.getElementById('timePicker');
+  const calendarToggle = document.getElementById('calendarToggle');
+  const bookingSchedule = document.getElementById('bookingSchedule');
   let availabilityRequestId = 0;
+  let calendarInitialized = false;
 
   function formatDateKey(date) {
     const year = date.getFullYear();
@@ -942,6 +956,18 @@
     bookingTime.value = time;
   }
 
+  calendarToggle.addEventListener('click', () => {
+    const isOpen = calendarToggle.getAttribute('aria-expanded') === 'true';
+    calendarToggle.setAttribute('aria-expanded', String(!isOpen));
+    calendarToggle.textContent = isOpen ? 'Mostrar calendario' : 'Ocultar calendario';
+    bookingSchedule.hidden = isOpen;
+
+    if (!isOpen && !calendarInitialized) {
+      calendarInitialized = true;
+      renderDayPicker();
+    }
+  });
+
   document.querySelectorAll('.js-booking').forEach(link => {
     link.addEventListener('click', () => {
       const service = link.getAttribute('data-service');
@@ -950,11 +976,17 @@
     });
   });
 
-  renderDayPicker();
-
   bookingForm.addEventListener('submit', async event => {
     event.preventDefault();
     const data = new FormData(bookingForm);
+    if (!data.get('date') || !data.get('time')) {
+      if (bookingSchedule.hidden) {
+        calendarToggle.click();
+      }
+      bookingStatus.textContent = 'Elegí un día y un horario antes de solicitar el turno.';
+      bookingStatus.classList.add('visible');
+      return;
+    }
     const date = new Date(`${data.get('date')}T12:00:00`);
     const readableDate = date.toLocaleDateString('es-AR', {
       weekday:'long', day:'numeric', month:'long'
