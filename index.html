@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+\xef\xbb\xbf<!DOCTYPE html>
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
@@ -349,9 +349,11 @@
     position:relative;
     border-left:3px solid var(--green-bright);
     min-width:0;
+    container-type:inline-size;
   }
   .table-scroll{width:100%;min-width:0;max-width:100%;margin-bottom:26px;}
-  .table-scroll .price-table{width:100%;table-layout:fixed;margin-bottom:0;}
+  .table-scroll .price-table{width:100%;margin-bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
+  .price-table tr{display:contents;}
   .combo-card.featured{border-left-color:var(--black);background:var(--black);}
   .combo-card.featured .combo-head h3,
   .combo-card.featured .combo-desc,
@@ -378,16 +380,15 @@
     text-transform:uppercase;letter-spacing:.04em;
     color:#565c53;text-align:left;padding-bottom:10px;
     border-bottom:1px solid var(--paper-dim);
-    overflow-wrap:anywhere;word-break:normal;vertical-align:bottom;
+    min-width:0;overflow-wrap:anywhere;word-break:normal;vertical-align:bottom;
   }
   .combo-card.featured .price-table th{color:var(--gray);border-color:var(--gray-line);}
   .price-table td{
-    font-family:var(--font-display);font-size:clamp(24px,2.4vw,32px);
+    font-family:var(--font-display);font-size:clamp(14px,4.2cqw,24px);
     font-weight:800;line-height:1.05;letter-spacing:.01em;
-    padding:14px 8px 14px 0;white-space:nowrap;vertical-align:top;
+    min-width:0;padding:14px 8px 14px 0;white-space:nowrap;vertical-align:top;
     border-bottom:1px solid var(--paper-dim);
   }
-  .price-table th,.price-table td{width:25%;}
   .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:8px;}
   .combo-card.featured .price-table td{color:var(--paper);border-color:var(--gray-line);}
   .price-table td:first-child{color:var(--green-bright-dim);}
@@ -402,7 +403,7 @@
     .combo-desc{font-size:13px;line-height:1.55;}
     .includes li{font-size:13px; line-height:1.5;}
     .price-table th{font-size:clamp(9px,2.8vw,11px);line-height:1.2;padding-right:3px;}
-    .price-table td{font-size:clamp(11px,3.7vw,22px);padding:12px 3px 12px 0;letter-spacing:-.02em;}
+    .price-table td{font-size:clamp(14px,4.2cqw,24px);padding:12px 3px 12px 0;letter-spacing:-.02em;}
     .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:3px;}
     .table-scroll{margin-bottom:18px;overflow:visible;}
   }
@@ -897,7 +898,7 @@
     const response = await fetch(`${SUPABASE_URL}/rest/v1/turnos?${params.toString()}`, {
       headers: {
         apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        Authorization: SUPABASE_ANON_KEY,
       }
     });
 
@@ -958,6 +959,9 @@
   }
 
   function setCalendarOpen(isOpen) {
+    if (!calendarToggle || !bookingSchedule) {
+      return;
+    }
     calendarOpen = isOpen;
     calendarToggle.setAttribute('aria-expanded', String(calendarOpen));
     calendarToggle.textContent = calendarOpen ? 'Ocultar calendario' : 'Mostrar calendario';
@@ -969,9 +973,11 @@
     }
   }
 
-  calendarToggle.addEventListener('click', () => {
-    setCalendarOpen(!calendarOpen);
-  });
+  if (calendarToggle && bookingSchedule) {
+    calendarToggle.addEventListener('click', () => {
+      setCalendarOpen(!calendarOpen);
+    });
+  }
 
   document.querySelectorAll('.js-booking').forEach(link => {
     link.addEventListener('click', () => {
@@ -1016,7 +1022,7 @@
         method: 'POST',
         headers: {
           apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Authorization: SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
           Prefer: 'return=representation'
         },
