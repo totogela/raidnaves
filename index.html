@@ -339,16 +339,17 @@
   }
 
   /* ---------- COMBOS ---------- */
-  .combos{background:var(--paper);}
-  .combo-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .combos{background:var(--paper);overflow:hidden;}
+  .combo-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
   .combo-card{
     border:1px solid var(--paper-dim);
     background:#fff;
     padding:38px;
     position:relative;
     border-left:3px solid var(--green-bright);
+    min-width:0;
   }
-  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:26px;}
+  .table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:26px;}
   .table-scroll .price-table{margin-bottom:0;min-width:440px;}
   .combo-card.featured{border-left-color:var(--black);background:var(--black);}
   .combo-card.featured .combo-head h3,
@@ -356,7 +357,7 @@
   .combo-card.featured .includes li{color:var(--paper);}
   .combo-card.featured .includes li{border-color:var(--gray-line);}
   .combo-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px;}
-  .combo-head h3{font-size:30px;text-transform:uppercase;}
+  .combo-head h3{font-size:30px;text-transform:uppercase;min-width:0;overflow-wrap:anywhere;}
   .combo-time{
     font-family:var(--font-mono);font-size:11.5px;color:var(--green-bright-dim);
     border:1px solid currentColor;padding:5px 9px;border-radius:14px;white-space:nowrap;margin-top:4px;
@@ -368,6 +369,8 @@
     font-size:14px;color:var(--ink);
     padding:10px 0;border-bottom:1px solid var(--paper-dim);
     display:flex;gap:10px;
+    min-width:0;
+    overflow-wrap:anywhere;
   }
   .includes li::before{content:"—";color:var(--green-bright-dim);flex:none;}
   .price-table{width:100%;border-collapse:collapse;margin-bottom:26px;}
@@ -400,6 +403,7 @@
     .price-table td{font-size:24px;}
     .table-scroll{margin-bottom:18px;}
     .table-scroll .price-table{min-width:300px;}
+    .combo-card .btn-primary{width:100%;justify-content:center;text-align:center;}
   }
 
   /* ---------- CONTACTO / CTA FINAL ---------- */
@@ -445,6 +449,31 @@
   .booking-day-grid,.booking-time-grid{display:grid;gap:10px;}
   .booking-day-grid{grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));}
   .booking-time-grid{grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));}
+  .booking-picker{
+    border:1px solid #b8c2b5;
+    border-radius:var(--radius-sm);
+    background:#f8faf7;
+  }
+  .booking-picker-summary{
+    cursor:pointer;
+    list-style:none;
+    padding:14px;
+    font-size:15px;
+    font-weight:800;
+    color:var(--ink);
+  }
+  .booking-picker-summary::-webkit-details-marker{display:none;}
+  .booking-picker-summary::before{content:"+";display:inline-block;width:1.2em;color:var(--green);font-size:20px;line-height:1;vertical-align:-2px;}
+  .booking-picker[open] .booking-picker-summary::before{content:"−";}
+  .booking-picker-content{padding:0 14px 14px;}
+  .booking-picker-content .booking-field{gap:8px;}
+  .booking-picker-content .booking-field + .booking-field{margin-top:17px;}
+  @media (min-width:601px){
+    .booking-picker{border:0;border-radius:0;background:transparent;}
+    .booking-picker-summary{display:none;}
+    .booking-picker-content{display:block;padding:0;}
+    .booking-picker-content .booking-field + .booking-field{margin-top:0;}
+  }
   .booking-day-option,.booking-time-option{
     appearance:none;border:1px solid #c8d0c4;border-radius:14px;background:#f8faf7;
     color:var(--ink);padding:12px 10px;cursor:pointer;transition:all .2s ease;font:700 15px var(--font-body);
@@ -709,16 +738,21 @@
             <option>Consulta general</option>
           </select>
         </div>
-        <div class="booking-field full">
-          <label>Día</label>
-          <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
-          <input id="bookingDate" name="date" type="hidden" required>
-        </div>
-        <div class="booking-field full">
-          <label>Horario preferido</label>
-          <div class="booking-time-grid" id="timePicker" aria-label="Elegí un horario disponible"></div>
-          <input id="bookingTime" name="time" type="hidden" required>
-        </div>
+        <details class="booking-picker full" id="bookingPicker">
+          <summary class="booking-picker-summary" id="bookingPickerSummary" aria-controls="dayPicker timePicker">Elegí día y horario</summary>
+          <div class="booking-picker-content">
+            <div class="booking-field">
+              <label>Día</label>
+              <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
+              <input id="bookingDate" name="date" type="hidden" required>
+            </div>
+            <div class="booking-field">
+              <label>Horario preferido</label>
+              <div class="booking-time-grid" id="timePicker" aria-label="Elegí un horario disponible"></div>
+              <input id="bookingTime" name="time" type="hidden" required>
+            </div>
+          </div>
+        </details>
         <div class="booking-field">
           <label for="bookingName">Nombre y apellido</label>
           <input id="bookingName" name="name" type="text" autocomplete="name" placeholder="Tu nombre" required>
@@ -809,7 +843,29 @@
   const bookingStatus = document.getElementById('bookingStatus');
   const dayPicker = document.getElementById('dayPicker');
   const timePicker = document.getElementById('timePicker');
+  const bookingPicker = document.getElementById('bookingPicker');
+  const bookingPickerSummary = document.getElementById('bookingPickerSummary');
   let availabilityRequestId = 0;
+
+  function syncBookingPicker() {
+    bookingPicker.open = window.matchMedia('(min-width: 601px)').matches;
+  }
+
+  function updateBookingPickerSummary() {
+    const date = bookingDate.value;
+    const time = bookingTime.value;
+    if (!date || !time) {
+      bookingPickerSummary.textContent = 'Elegí día y horario';
+      return;
+    }
+
+    const readableDate = new Date(`${date}T12:00:00`).toLocaleDateString('es-AR', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short'
+    });
+    bookingPickerSummary.textContent = `Día y horario: ${readableDate}, ${time}`;
+  }
 
   function formatDateKey(date) {
     const year = date.getFullYear();
@@ -900,12 +956,14 @@
     });
 
     bookingDate.value = dateKey;
+    updateBookingPickerSummary();
     renderTimePicker(dateKey);
   }
 
   async function renderTimePicker(dateKey) {
     const requestId = ++availabilityRequestId;
     bookingTime.value = '';
+    updateBookingPickerSummary();
     timePicker.innerHTML = '<p class="booking-help">Consultando disponibilidad...</p>';
 
     try {
@@ -967,6 +1025,7 @@
     if (time) {
       bookingTime.value = time;
     }
+    updateBookingPickerSummary();
   }
 
   document.querySelectorAll('.js-booking').forEach(link => {
@@ -977,6 +1036,8 @@
     });
   });
 
+  syncBookingPicker();
+  window.addEventListener('resize', syncBookingPicker, { passive:true });
   renderDayPicker();
 
   bookingForm.addEventListener('submit', async event => {
