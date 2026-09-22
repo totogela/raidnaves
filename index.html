@@ -348,9 +348,12 @@
     position:relative;
     border-left:3px solid var(--green-bright);
     min-width:0;
+    max-width:100%;
+    overflow:hidden;
   }
-  .table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:26px;}
-  .table-scroll .price-table{margin-bottom:0;min-width:440px;}
+  .combo-card > *{min-width:0;max-width:100%;}
+  .table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:26px;}
+  .table-scroll .price-table{width:100%;min-width:0;margin-bottom:0;}
   .combo-card.featured{border-left-color:var(--black);background:var(--black);}
   .combo-card.featured .combo-head h3,
   .combo-card.featured .combo-desc,
@@ -393,7 +396,8 @@
     .combo-grid{grid-template-columns:1fr; gap:18px;}
   }
   @media (max-width:480px){
-    .combo-card{padding:22px 16px;}
+    .combo-grid,.combo-card,.combo-card *{min-width:0;max-width:100%;}
+    .combo-card{width:100%;padding:22px 16px;}
     .combo-head{flex-direction:column;align-items:flex-start;gap:12px;}
     .combo-head h3{font-size:24px;}
     .combo-time{margin-top:0;}
@@ -402,7 +406,10 @@
     .price-table th{font-size:12px;}
     .price-table td{font-size:24px;}
     .table-scroll{margin-bottom:18px;}
-    .table-scroll .price-table{min-width:300px;}
+    .table-scroll .price-table{width:100%;min-width:0;table-layout:fixed;}
+    .price-table th,.price-table td{overflow-wrap:anywhere;word-break:break-word;}
+    .price-table th{font-size:10px;line-height:1.2;}
+    .price-table td{font-size:20px;padding-right:4px;}
     .combo-card .btn-primary{width:100%;justify-content:center;text-align:center;}
   }
 
@@ -449,23 +456,24 @@
   .booking-day-grid,.booking-time-grid{display:grid;gap:10px;}
   .booking-day-grid{grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));}
   .booking-time-grid{grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));}
-  .booking-picker{
-    border:1px solid #b8c2b5;
-    border-radius:var(--radius-sm);
-    background:#f8faf7;
-  }
+  .booking-picker{border:1px solid #b8c2b5;border-radius:var(--radius-sm);background:#f8faf7;}
   .booking-picker-summary{
+    appearance:none;
+    border:0;
+    width:100%;
+    background:transparent;
     cursor:pointer;
-    list-style:none;
     padding:14px;
     font-size:15px;
     font-weight:800;
     color:var(--ink);
+    text-align:left;
+    font-family:inherit;
   }
-  .booking-picker-summary::-webkit-details-marker{display:none;}
   .booking-picker-summary::before{content:"+";display:inline-block;width:1.2em;color:var(--green);font-size:20px;line-height:1;vertical-align:-2px;}
-  .booking-picker[open] .booking-picker-summary::before{content:"−";}
-  .booking-picker-content{padding:0 14px 14px;}
+  .booking-picker-summary[aria-expanded="true"]::before{content:"−";}
+  .booking-picker-content{display:none;padding:0 14px 14px;}
+  .booking-picker-content.is-visible{display:block;}
   .booking-picker-content .booking-field{gap:8px;}
   .booking-picker-content .booking-field + .booking-field{margin-top:17px;}
   @media (min-width:601px){
@@ -738,9 +746,9 @@
             <option>Consulta general</option>
           </select>
         </div>
-        <details class="booking-picker full" id="bookingPicker">
-          <summary class="booking-picker-summary" id="bookingPickerSummary" aria-controls="dayPicker timePicker">Elegí día y horario</summary>
-          <div class="booking-picker-content">
+        <div class="booking-picker full" id="bookingPicker">
+          <button class="booking-picker-summary" id="bookingPickerSummary" type="button" aria-controls="bookingPickerContent" aria-expanded="false">Mostrar calendario</button>
+          <div class="booking-picker-content" id="bookingPickerContent">
             <div class="booking-field">
               <label>Día</label>
               <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
@@ -752,7 +760,7 @@
               <input id="bookingTime" name="time" type="hidden" required>
             </div>
           </div>
-        </details>
+        </div>
         <div class="booking-field">
           <label for="bookingName">Nombre y apellido</label>
           <input id="bookingName" name="name" type="text" autocomplete="name" placeholder="Tu nombre" required>
@@ -845,17 +853,26 @@
   const timePicker = document.getElementById('timePicker');
   const bookingPicker = document.getElementById('bookingPicker');
   const bookingPickerSummary = document.getElementById('bookingPickerSummary');
+  const bookingPickerContent = document.getElementById('bookingPickerContent');
   let availabilityRequestId = 0;
 
   function syncBookingPicker() {
-    bookingPicker.open = window.matchMedia('(min-width: 601px)').matches;
+    const isDesktop = window.matchMedia('(min-width: 601px)').matches;
+    bookingPickerSummary.hidden = isDesktop;
+    bookingPickerContent.classList.toggle('is-visible', isDesktop || bookingPickerSummary.getAttribute('aria-expanded') === 'true');
+  }
+
+  function toggleBookingPicker() {
+    const isExpanded = bookingPickerSummary.getAttribute('aria-expanded') === 'true';
+    bookingPickerSummary.setAttribute('aria-expanded', String(!isExpanded));
+    bookingPickerSummary.textContent = isExpanded ? 'Mostrar calendario' : 'Ocultar calendario';
+    bookingPickerContent.classList.toggle('is-visible', !isExpanded);
   }
 
   function updateBookingPickerSummary() {
     const date = bookingDate.value;
     const time = bookingTime.value;
     if (!date || !time) {
-      bookingPickerSummary.textContent = 'Elegí día y horario';
       return;
     }
 
@@ -864,7 +881,7 @@
       day: 'numeric',
       month: 'short'
     });
-    bookingPickerSummary.textContent = `Día y horario: ${readableDate}, ${time}`;
+    bookingPickerSummary.dataset.selection = `Día y horario: ${readableDate}, ${time}`;
   }
 
   function formatDateKey(date) {
@@ -1036,6 +1053,7 @@
     });
   });
 
+  bookingPickerSummary.addEventListener('click', toggleBookingPicker);
   syncBookingPicker();
   window.addEventListener('resize', syncBookingPicker, { passive:true });
   renderDayPicker();
