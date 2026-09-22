@@ -349,11 +349,12 @@
     position:relative;
     border-left:3px solid var(--green-bright);
     min-width:0;
-    container-type:inline-size;
   }
   .table-scroll{width:100%;min-width:0;max-width:100%;margin-bottom:26px;}
-  .table-scroll .price-table{width:100%;margin-bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
-  .price-table tr{display:contents;}
+  .price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:26px;}
+  .price-item{min-width:0;padding:14px 12px;border:1px solid var(--paper-dim);border-radius:var(--radius-sm);}
+  .price-label{display:block;min-height:2.5em;font-family:var(--font-body);font-weight:700;font-size:12px;line-height:1.25;text-transform:uppercase;letter-spacing:.04em;color:#565c53;}
+  .price-value{display:block;margin-top:9px;font-family:var(--font-display);font-size:clamp(22px,3vw,32px);font-weight:800;line-height:1;letter-spacing:.01em;white-space:nowrap;}
   .combo-card.featured{border-left-color:var(--black);background:var(--black);}
   .combo-card.featured .combo-head h3,
   .combo-card.featured .combo-desc,
@@ -374,24 +375,10 @@
     display:flex;gap:10px;
   }
   .includes li::before{content:"—";color:var(--green-bright-dim);flex:none;}
-  .price-table{width:100%;border-collapse:collapse;margin-bottom:26px;}
-  .price-table th{
-    font-family:var(--font-body);font-weight:700;font-size:13px;
-    text-transform:uppercase;letter-spacing:.04em;
-    color:#565c53;text-align:left;padding-bottom:10px;
-    border-bottom:1px solid var(--paper-dim);
-    min-width:0;overflow-wrap:anywhere;word-break:normal;vertical-align:bottom;
-  }
-  .combo-card.featured .price-table th{color:var(--gray);border-color:var(--gray-line);}
-  .price-table td{
-    font-family:var(--font-display);font-size:clamp(14px,4.2cqw,24px);
-    font-weight:800;line-height:1.05;letter-spacing:.01em;
-    min-width:0;padding:14px 8px 14px 0;white-space:nowrap;vertical-align:top;
-    border-bottom:1px solid var(--paper-dim);
-  }
-  .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:8px;}
-  .combo-card.featured .price-table td{color:var(--paper);border-color:var(--gray-line);}
-  .price-table td:first-child{color:var(--green-bright-dim);}
+  .combo-card.featured .price-item{border-color:var(--gray-line);}
+  .combo-card.featured .price-label{color:var(--gray);}
+  .combo-card.featured .price-value{color:var(--paper);}
+  .price-item:first-child .price-value{color:var(--green-bright-dim);}
   @media (max-width:860px){
     .combo-grid{grid-template-columns:1fr; gap:18px;}
   }
@@ -402,9 +389,10 @@
     .combo-time{margin-top:0;}
     .combo-desc{font-size:13px;line-height:1.55;}
     .includes li{font-size:13px; line-height:1.5;}
-    .price-table th{font-size:clamp(9px,2.8vw,11px);line-height:1.2;padding-right:3px;}
-    .price-table td{font-size:clamp(14px,4.2cqw,24px);padding:12px 3px 12px 0;letter-spacing:-.02em;}
-    .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:3px;}
+    .price-grid{grid-template-columns:1fr;gap:8px;}
+    .price-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;}
+    .price-label{min-height:0;font-size:11px;}
+    .price-value{margin-top:0;font-size:clamp(20px,7vw,28px);flex:none;}
     .table-scroll{margin-bottom:18px;overflow:visible;}
   }
 
@@ -442,6 +430,7 @@
   .booking-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   .booking-calendar-toggle{grid-column:1/-1;margin:0 0 20px;}
   .booking-schedule{display:grid;gap:20px;}
+  .booking-schedule[hidden]{display:none !important;}
   .booking-field{display:flex;flex-direction:column;gap:8px;}
   .booking-field.full{grid-column:1/-1;}
   .booking-field label{font-size:15px;font-weight:800;color:var(--ink);}
@@ -655,11 +644,11 @@
           <li>Exterior Estándar + Interior Estándar completos</li>
           <li>Ideal para vehículos de uso diario</li>
         </ul>
-        <div class="table-scroll">
-        <table class="price-table">
-          <tr><th>Chico</th><th>Sedán</th><th>SUV / Pickup</th><th>Combi / Grande</th></tr>
-          <tr><td>$44.000</td><td>$52.000</td><td>$68.000</td><td>$86.000</td></tr>
-        </table>
+        <div class="price-grid" aria-label="Precios del Combo Estándar">
+          <div class="price-item"><span class="price-label">Chico</span><strong class="price-value">$44.000</strong></div>
+          <div class="price-item"><span class="price-label">Sedán</span><strong class="price-value">$52.000</strong></div>
+          <div class="price-item"><span class="price-label">SUV / Pickup</span><strong class="price-value">$68.000</strong></div>
+          <div class="price-item"><span class="price-label">Combi / Grande</span><strong class="price-value">$86.000</strong></div>
         </div>
         <a class="btn-primary js-booking" data-service="Combo Estándar" href="#reservar">Agendar turno</a>
       </div>
@@ -675,11 +664,11 @@
           <li>Encerado o sellado con Blend o Carnaúba Native</li>
           <li>Brillo extremo y protección hidrofóbica</li>
         </ul>
-        <div class="table-scroll">
-        <table class="price-table">
-          <tr><th>Chico</th><th>Sedán</th><th>SUV / Pickup</th><th>Combi / Grande</th></tr>
-          <tr><td>$162.000</td><td>$189.600</td><td>$246.000</td><td>$306.000</td></tr>
-        </table>
+        <div class="price-grid" aria-label="Precios del Detailing Full">
+          <div class="price-item"><span class="price-label">Chico</span><strong class="price-value">$162.000</strong></div>
+          <div class="price-item"><span class="price-label">Sedán</span><strong class="price-value">$189.600</strong></div>
+          <div class="price-item"><span class="price-label">SUV / Pickup</span><strong class="price-value">$246.000</strong></div>
+          <div class="price-item"><span class="price-label">Combi / Grande</span><strong class="price-value">$306.000</strong></div>
         </div>
         <a class="btn-primary js-booking" data-service="Detailing Full" href="#reservar">Agendar turno</a>
       </div>
@@ -707,7 +696,7 @@
             <option>Consulta general</option>
           </select>
         </div>
-        <button class="btn-line booking-calendar-toggle" id="calendarToggle" type="button" aria-expanded="false" aria-controls="bookingSchedule">
+        <button class="btn-line booking-calendar-toggle" id="calendarToggle" type="button" data-calendar-toggle aria-expanded="false" aria-controls="bookingSchedule">
           Mostrar calendario
         </button>
         <div class="booking-schedule" id="bookingSchedule" hidden>
@@ -966,6 +955,7 @@
     calendarToggle.setAttribute('aria-expanded', String(calendarOpen));
     calendarToggle.textContent = calendarOpen ? 'Ocultar calendario' : 'Mostrar calendario';
     bookingSchedule.hidden = !calendarOpen;
+    bookingSchedule.classList.toggle('is-open', calendarOpen);
 
     if (calendarOpen && !calendarInitialized) {
       calendarInitialized = true;
@@ -973,11 +963,16 @@
     }
   }
 
-  if (calendarToggle && bookingSchedule) {
-    calendarToggle.addEventListener('click', () => {
-      setCalendarOpen(!calendarOpen);
-    });
-  }
+  document.addEventListener('click', event => {
+    const toggle = event.target && typeof event.target.closest === 'function'
+      ? event.target.closest('[data-calendar-toggle]')
+      : null;
+    if (toggle !== calendarToggle || !bookingSchedule) {
+      return;
+    }
+    event.preventDefault();
+    setCalendarOpen(!calendarOpen);
+  });
 
   document.querySelectorAll('.js-booking').forEach(link => {
     link.addEventListener('click', () => {
