@@ -478,6 +478,15 @@
   footer .fcol h5{color:var(--paper);font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;font-family:var(--font-body);font-weight:700;}
   footer .fcol a, footer .fcol span{display:block;color:var(--gray);margin-bottom:8px;}
   footer .fcol a:hover{color:var(--paper);}
+  .social-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .social-links a{
+    display:inline-flex !important;align-items:center;justify-content:center;
+    border:1px solid var(--gray-line);border-radius:var(--radius-btn);
+    padding:8px 10px;margin:0 !important;color:var(--paper) !important;
+    font-family:var(--font-mono);font-size:12px;
+  }
+  .social-links a:hover{border-color:var(--green-bright);color:var(--green-bright) !important;}
+  .social-links a[aria-disabled="true"]{opacity:.65;cursor:not-allowed;}
   .footer-bottom{
     margin-top:40px;padding-top:20px;border-top:1px solid var(--gray-line);
     font-size:12px;color:#5c6157;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
@@ -762,6 +771,11 @@
       <div class="fcol">
         <h5>Contacto</h5>
         <a class="js-wa" data-msg="Hola! Quiero hacer una consulta." href="#">WhatsApp</a>
+        <div class="social-links" aria-label="Redes sociales">
+          <a href="https://www.instagram.com/raidnaves/" target="_blank" rel="noopener noreferrer" data-social="instagram">Instagram</a>
+          <a href="https://www.tiktok.com/@raidnaves22" target="_blank" rel="noopener noreferrer" data-social="tiktok">TikTok</a>
+          <a href="https://www.facebook.com/p/Raid-Naves-61594250289396/" target="_blank" rel="noopener noreferrer" data-social="facebook">Facebook</a>
+        </div>
         <span>Bahía Blanca, Buenos Aires</span>
       </div>
       <div class="fcol">
@@ -846,6 +860,25 @@
     return ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
   }
 
+  const SERVICE_DURATIONS = {
+    'Exterior Estándar': 2,
+    'Exterior Pro': 3,
+    'Interior Estándar': 2,
+    'Interior Pro': 3,
+    'Combo Estándar': 3,
+    'Detailing Full': 7,
+    'Consulta general': 2
+  };
+
+  function timeToMinutes(time) {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
+  function getServiceDuration(service) {
+    return SERVICE_DURATIONS[service] || 2;
+  }
+
   function renderDayPicker() {
     const dates = getAllowedDates();
     dayPicker.innerHTML = dates.map(date => {
@@ -884,7 +917,7 @@
 
   async function getBookedSlots(dateKey) {
     const params = new URLSearchParams({
-      select: 'horario',
+      select: 'horario,servicio',
       fecha: `eq.${dateKey}`,
       estado: 'in.(pendiente,confirmado)'
     });
@@ -901,7 +934,10 @@
     }
 
     const turnos = await response.json();
-    return new Set(turnos.map(turno => String(turno.horario).slice(0, 5)));
+    return turnos.map(turno => ({
+      start: timeToMinutes(String(turno.horario).slice(0, 5)),
+      duration: getServiceDuration(turno.servicio)
+    }));
   }
 
   async function renderTimePicker(dateKey) {
@@ -915,9 +951,22 @@
         return;
       }
 
-      const availableSlots = getSlotsForDate(dateKey).filter(slot => !bookedSlots.has(slot));
+      const slots = getSlotsForDate(dateKey);
+      const workEnd = timeToMinutes(slots[slots.length - 1]) + 60;
+      const duration = getServiceDuration(bookingService.value);
+      const availableSlots = slots.filter(slot => {
+        const start = timeToMinutes(slot);
+        const end = start + duration * 60;
+        if (end > workEnd) {
+          return false;
+        }
+        return !bookedSlots.some(reservation => {
+          const reservationEnd = reservation.start + reservation.duration * 60;
+          return start < reservationEnd && end > reservation.start;
+        });
+      });
       if (availableSlots.length === 0) {
-        timePicker.innerHTML = '<p class="booking-help">No quedan horarios disponibles para este día. Elegí otro día.</p>';
+        timePicker.innerHTML = `<p class="booking-help">No hay horarios disponibles para un servicio de ${duration} horas en este día. Elegí otra fecha o servicio.</p>`;
         return;
       }
 
@@ -986,6 +1035,32 @@
       if (service) bookingService.value = service;
       bookingStatus.classList.remove('visible');
     });
+
+  });
+
+  bookingService.addEventListener('change', () => {
+    if (bookingDate.value) {
+      renderTimePicker(bookingDate.value);
+    }
+  });
+
+  const SOCIAL_URLS = {
+    instagram: 'https://www.instagram.com/raidnaves/',
+    tiktok: 'https://www.tiktok.com/@raidnaves22',
+    facebook: 'https://www.facebook.com/p/Raid-Naves-61594250289396/'
+  };
+  document.querySelectorAll('[data-social]').forEach(link => {
+    const url = SOCIAL_URLS[link.dataset.social];
+    if (url) {
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.removeAttribute('aria-disabled');
+    } else {
+      link.setAttribute('aria-disabled', 'true');
+      link.title = 'URL pendiente de configuración';
+      link.addEventListener('click', event => event.preventDefault());
+    }
   });
 
   bookingForm.addEventListener('submit', async event => {
