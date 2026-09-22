@@ -384,7 +384,7 @@
   .price-table td{
     font-family:var(--font-display);font-size:clamp(24px,2.4vw,32px);
     font-weight:800;line-height:1.05;letter-spacing:.01em;
-    padding:14px 8px 14px 0;overflow-wrap:anywhere;word-break:normal;vertical-align:top;
+    padding:14px 8px 14px 0;white-space:nowrap;vertical-align:top;
     border-bottom:1px solid var(--paper-dim);
   }
   .price-table th,.price-table td{width:25%;}
@@ -402,7 +402,7 @@
     .combo-desc{font-size:13px;line-height:1.55;}
     .includes li{font-size:13px; line-height:1.5;}
     .price-table th{font-size:clamp(9px,2.8vw,11px);line-height:1.2;padding-right:3px;}
-    .price-table td{font-size:clamp(14px,4.2vw,22px);padding:12px 3px 12px 0;}
+    .price-table td{font-size:clamp(11px,3.7vw,22px);padding:12px 3px 12px 0;letter-spacing:-.02em;}
     .price-table th:not(:first-child),.price-table td:not(:first-child){padding-left:3px;}
     .table-scroll{margin-bottom:18px;overflow:visible;}
   }
@@ -815,6 +815,7 @@
   const bookingSchedule = document.getElementById('bookingSchedule');
   let availabilityRequestId = 0;
   let calendarInitialized = false;
+  let calendarOpen = false;
 
   function formatDateKey(date) {
     const year = date.getFullYear();
@@ -956,16 +957,20 @@
     bookingTime.value = time;
   }
 
-  calendarToggle.addEventListener('click', () => {
-    const isOpen = calendarToggle.getAttribute('aria-expanded') === 'true';
-    calendarToggle.setAttribute('aria-expanded', String(!isOpen));
-    calendarToggle.textContent = isOpen ? 'Mostrar calendario' : 'Ocultar calendario';
-    bookingSchedule.hidden = isOpen;
+  function setCalendarOpen(isOpen) {
+    calendarOpen = isOpen;
+    calendarToggle.setAttribute('aria-expanded', String(calendarOpen));
+    calendarToggle.textContent = calendarOpen ? 'Ocultar calendario' : 'Mostrar calendario';
+    bookingSchedule.hidden = !calendarOpen;
 
-    if (!isOpen && !calendarInitialized) {
+    if (calendarOpen && !calendarInitialized) {
       calendarInitialized = true;
       renderDayPicker();
     }
+  }
+
+  calendarToggle.addEventListener('click', () => {
+    setCalendarOpen(!calendarOpen);
   });
 
   document.querySelectorAll('.js-booking').forEach(link => {
@@ -980,8 +985,8 @@
     event.preventDefault();
     const data = new FormData(bookingForm);
     if (!data.get('date') || !data.get('time')) {
-      if (bookingSchedule.hidden) {
-        calendarToggle.click();
+      if (!calendarOpen) {
+        setCalendarOpen(true);
       }
       bookingStatus.textContent = 'Elegí un día y un horario antes de solicitar el turno.';
       bookingStatus.classList.add('visible');
