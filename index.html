@@ -429,7 +429,11 @@
   .booking-intro{color:#565c53;font-size:16px;line-height:1.6;margin:16px 0 30px;max-width:62ch;}
   .booking-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   .booking-calendar-toggle{grid-column:1/-1;margin:0 0 20px;}
-  .booking-schedule{display:grid;gap:20px;}
+  .booking-schedule{
+    grid-column:1/-1;width:100%;min-width:0;box-sizing:border-box;
+    display:grid;gap:20px;padding:20px;
+    border:1px solid #d2d8cc;border-radius:var(--radius-sm);background:#f8faf7;
+  }
   .booking-schedule[hidden]{display:none !important;}
   .booking-field{display:flex;flex-direction:column;gap:8px;}
   .booking-field.full{grid-column:1/-1;}
@@ -464,6 +468,7 @@
     .booking-day-option,.booking-time-option{padding:10px 6px;font-size:14px;}
     .booking-day-date,.booking-time-value{font-size:15px;}
     .booking-calendar-toggle{width:100%;justify-content:center;}
+    .booking-schedule{grid-column:1/-1;padding:14px;}
   }
 
   /* ---------- FOOTER ---------- */
@@ -699,7 +704,7 @@
         <button class="btn-line booking-calendar-toggle" id="calendarToggle" type="button" data-calendar-toggle aria-expanded="false" aria-controls="bookingSchedule">
           Mostrar calendario
         </button>
-        <div class="booking-schedule" id="bookingSchedule" hidden>
+        <div class="booking-schedule" id="bookingSchedule" hidden aria-hidden="true">
           <div class="booking-field full">
             <label>Día</label>
             <div class="booking-day-grid" id="dayPicker" aria-label="Elegí un día disponible"></div>
@@ -955,6 +960,7 @@
     calendarToggle.setAttribute('aria-expanded', String(calendarOpen));
     calendarToggle.textContent = calendarOpen ? 'Ocultar calendario' : 'Mostrar calendario';
     bookingSchedule.hidden = !calendarOpen;
+    bookingSchedule.setAttribute('aria-hidden', String(!calendarOpen));
     bookingSchedule.classList.toggle('is-open', calendarOpen);
 
     if (calendarOpen && !calendarInitialized) {
