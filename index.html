@@ -428,7 +428,18 @@
   .booking-card h2{font-size:clamp(32px,5vw,52px);text-transform:uppercase;}
   .booking-intro{color:#565c53;font-size:16px;line-height:1.6;margin:16px 0 30px;max-width:62ch;}
   .booking-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  .booking-calendar-toggle{grid-column:1/-1;margin:0 0 20px;}
+  .booking-calendar-toggle{
+    grid-column:1/-1;margin:0 0 20px;
+    background:var(--green-bright);border-color:var(--green-bright);color:#fff;
+    font-weight:700;
+  }
+  .booking-calendar-toggle:hover{
+    background:var(--green-bright-dim);border-color:var(--green-bright-dim);color:#fff;
+  }
+  .booking-calendar-toggle:focus-visible{
+    outline:3px solid #fff;outline-offset:3px;
+    box-shadow:0 0 0 6px var(--green-bright-dim);
+  }
   .booking-schedule{
     grid-column:1/-1;width:100%;min-width:0;box-sizing:border-box;
     display:grid;gap:20px;padding:20px;
