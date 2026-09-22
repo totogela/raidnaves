@@ -489,15 +489,6 @@
   footer .fcol h5{color:var(--paper);font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;font-family:var(--font-body);font-weight:700;}
   footer .fcol a, footer .fcol span{display:block;color:var(--gray);margin-bottom:8px;}
   footer .fcol a:hover{color:var(--paper);}
-  .social-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
-  .social-links a{
-    display:inline-flex !important;align-items:center;justify-content:center;
-    border:1px solid var(--gray-line);border-radius:var(--radius-btn);
-    padding:8px 10px;margin:0 !important;color:var(--paper) !important;
-    font-family:var(--font-mono);font-size:12px;
-  }
-  .social-links a:hover{border-color:var(--green-bright);color:var(--green-bright) !important;}
-  .social-links a[aria-disabled="true"]{opacity:.65;cursor:not-allowed;}
   .footer-bottom{
     margin-top:40px;padding-top:20px;border-top:1px solid var(--gray-line);
     font-size:12px;color:#5c6157;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
@@ -508,7 +499,7 @@
     .footer-bottom{flex-direction:column;}
   }
 
-  /* ---------- FLOATING WHATSAPP ---------- */
+  /* ---------- FLOATING CONTACT AND SOCIAL ACTIONS ---------- */
   .wa-float{
     position:fixed;bottom:24px;right:24px;z-index:90;
     width:58px;height:58px;border-radius:50%;
@@ -525,6 +516,36 @@
   }
   .wa-float:hover{transform:scale(1.07);background:#68d386;animation-play-state:paused;}
   .wa-float svg{width:28px;height:28px;}
+  .social-float{
+    position:fixed;right:94px;bottom:24px;z-index:90;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .social-float-toggle,.social-float-link{
+    width:50px;height:50px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--gray-line);font-family:var(--font-mono);
+    font-size:12px;font-weight:700;line-height:1;text-decoration:none;
+    box-shadow:0 8px 20px rgba(0,0,0,.24);
+  }
+  .social-float-toggle{
+    background:var(--black);color:var(--paper);cursor:pointer;
+    transition:transform .2s ease,background .2s ease;
+  }
+  .social-float-toggle:hover,.social-float-toggle[aria-expanded="true"]{
+    background:var(--green-bright);border-color:var(--green-bright);color:var(--black);
+  }
+  .social-float-link{
+    background:var(--paper);color:var(--black);border-color:var(--green-bright);
+    opacity:1;transform:translateY(0);transition:opacity .2s ease,transform .2s ease;
+  }
+  .social-float-link:hover{background:var(--green-bright);color:var(--black);}
+  .social-float-links[hidden]{display:none;}
+  .social-float-links{display:flex;flex-direction:column;gap:10px;}
+  @media (max-width:600px){
+    .wa-float{right:16px;bottom:16px;}
+    .social-float{right:82px;bottom:20px;}
+    .social-float-toggle,.social-float-link{width:46px;height:46px;}
+  }
 
   ::selection{background:var(--green-bright);color:var(--black);}
   :focus-visible{outline:2px solid var(--green-bright);outline-offset:2px;}
@@ -782,11 +803,6 @@
       <div class="fcol">
         <h5>Contacto</h5>
         <a class="js-wa" data-msg="Hola! Quiero hacer una consulta." href="#">WhatsApp</a>
-        <div class="social-links" aria-label="Redes sociales">
-          <a href="https://www.instagram.com/raidnaves/" target="_blank" rel="noopener noreferrer" data-social="instagram">Instagram</a>
-          <a href="https://www.tiktok.com/@raidnaves22" target="_blank" rel="noopener noreferrer" data-social="tiktok">TikTok</a>
-          <a href="https://www.facebook.com/p/Raid-Naves-61594250289396/" target="_blank" rel="noopener noreferrer" data-social="facebook">Facebook</a>
-        </div>
         <span>Bahía Blanca, Buenos Aires</span>
       </div>
       <div class="fcol">
@@ -806,6 +822,14 @@
 <a class="wa-float js-wa" data-msg="Hola! Quiero consultar por un turno de lavado a domicilio." href="#" aria-label="Escribir por WhatsApp">
   <svg viewBox="0 0 32 32" fill="#0d0f0c"><path d="M16.02 3C9.4 3 4 8.4 4 15.02c0 2.35.68 4.55 1.86 6.4L4 29l7.76-1.83a11.9 11.9 0 0 0 4.26.78c6.62 0 12.02-5.4 12.02-12.02C28.04 8.4 22.64 3 16.02 3zm0 21.7c-1.4 0-2.76-.34-3.96-.98l-.28-.15-4.6 1.08 1.1-4.48-.18-.3a9.66 9.66 0 0 1-1.5-5.15c0-5.36 4.36-9.72 9.42-9.72 5.02 0 9.4 4.36 9.4 9.72 0 5.36-4.38 9.98-9.4 9.98zm5.28-7.4c-.28-.14-1.68-.83-1.94-.92-.26-.1-.45-.14-.64.14-.19.28-.73.92-.9 1.1-.16.19-.33.21-.6.07-.28-.14-1.17-.43-2.23-1.37-.82-.73-1.38-1.63-1.54-1.9-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.16.19-.28.28-.47.1-.19.05-.35-.02-.5-.07-.14-.64-1.54-.88-2.11-.23-.55-.47-.48-.64-.49-.16-.01-.35-.01-.54-.01-.19 0-.5.07-.76.35-.26.28-1 .98-1 2.38 0 1.4 1.02 2.76 1.16 2.95.14.19 2 3.05 4.85 4.28.68.29 1.2.47 1.62.6.68.22 1.3.19 1.79.11.55-.08 1.68-.69 1.92-1.35.24-.66.24-1.23.17-1.35-.07-.12-.26-.19-.54-.33z"/></svg>
 </a>
+<div class="social-float" aria-label="Redes sociales">
+  <div class="social-float-links" id="socialFloatLinks" hidden>
+    <a class="social-float-link" data-social="instagram" href="https://www.instagram.com/raidnaves/" target="_blank" rel="noopener" aria-label="Abrir Instagram de Raid Naves">IG</a>
+    <a class="social-float-link" data-social="tiktok" href="https://www.tiktok.com/@raidnaves22" target="_blank" rel="noopener" aria-label="Abrir TikTok de Raid Naves">TK</a>
+    <a class="social-float-link" data-social="facebook" href="https://www.facebook.com/p/Raid-Naves-61594250289396/" target="_blank" rel="noopener" aria-label="Abrir Facebook de Raid Naves">FB</a>
+  </div>
+  <button class="social-float-toggle" id="socialFloatToggle" type="button" aria-expanded="false" aria-controls="socialFloatLinks" aria-label="Mostrar redes sociales">RS</button>
+</div>
 
 <script>
   // Nav scroll state
@@ -1071,6 +1095,23 @@
       link.setAttribute('aria-disabled', 'true');
       link.title = 'URL pendiente de configuración';
       link.addEventListener('click', event => event.preventDefault());
+    }
+  });
+
+  const socialFloatToggle = document.getElementById('socialFloatToggle');
+  const socialFloatLinks = document.getElementById('socialFloatLinks');
+  function setSocialMenuOpen(isOpen) {
+    socialFloatLinks.hidden = !isOpen;
+    socialFloatToggle.setAttribute('aria-expanded', String(isOpen));
+    socialFloatToggle.setAttribute('aria-label', isOpen ? 'Ocultar redes sociales' : 'Mostrar redes sociales');
+  }
+  socialFloatToggle.addEventListener('click', () => {
+    setSocialMenuOpen(socialFloatLinks.hidden);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !socialFloatLinks.hidden) {
+      setSocialMenuOpen(false);
+      socialFloatToggle.focus();
     }
   });
 
